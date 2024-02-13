@@ -1,106 +1,153 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import Image from "next/image";
-import { Label } from "@/components/ui/label";
+"use client";
+import React, { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
-const Login = () => {
+import Loading from "../loading";
+
+export default function LoginPage() {
+	const router = useRouter();
+	const [user, setUser] = React.useState({
+		email: "",
+		password: "",
+	});
+	const [buttonDisabled, setButtonDisabled] = React.useState(false);
+	const [loading, setLoading] = React.useState(false);
+
+	const onLogin: any = async () => {
+		try {
+			setLoading(true);
+			const response = await axios.post("/api/user/login", user);
+			// console.log("Login success", response.data);
+			toast.success("Login success");
+			router.push("/");
+		} catch (error: any) {
+			// console.log("Login failed", error.message);
+			toast.error(error.response.data.error);
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	useEffect(() => {
+		if (user.email.length > 0 && user.password.length > 0) {
+			setButtonDisabled(false);
+		} else {
+			setButtonDisabled(true);
+		}
+	}, [user]);
+
 	return (
 		<>
-			<section className="bg-gray-900">
-				<div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-					<Link
-						href="#"
-						className="flex items-center mb-6 text-2xl font-semibold text-white"
-					>
-						Login
-					</Link>
-					<div className="w-full bg-gray-800 rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
-						<div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-							<h1 className="text-xl font-bold leading-tight tracking-tight text-white md:text-2xl">
-								Sign in to your account
-							</h1>
-							<form className="space-y-4 md:space-y-6" action="#">
-								<div>
-									<Label
-										htmlFor="email"
-										className="block mb-2 text-sm font-medium text-white"
-									>
-										Your email
-									</Label>
-									<Input
-										type="email"
-										name="email"
-										id="email"
-										className="bg-gray-700 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-										placeholder="name@company.com"
-										required
-									/>
-								</div>
-								<div>
-									<Label
-										htmlFor="password"
-										className="block mb-2 text-sm font-medium text-white"
-									>
-										Password
-									</Label>
-									<Input
-										type="password"
-										name="password"
-										id="password"
-										placeholder="••••••••"
-										className="bg-gray-700 border border-gray-600 text-white sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-										required
-									/>
-								</div>
-								<div className="flex items-center justify-between">
-									<div className="flex items-start">
-										<div className="flex items-center h-5">
-											<Input
-												id="remember"
-												aria-describedby="remember"
-												type="checkbox"
-												className="w-4 h-4 border border-gray-300 rounded bg-gray-700 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-												required
-											/>
-										</div>
-										<div className="ml-3 text-sm">
-											<Label
-												htmlFor="remember"
-												className="text-gray-500 dark:text-gray-300"
-											>
-												Remember me
-											</Label>
-										</div>
-									</div>
-									<Link
-										href="#"
-										className="text-sm font-medium text-primary-600 hover:underline dark:text-primary-500"
-									>
-										Forgot password?
-									</Link>
-								</div>
-								<Button
-									type="submit"
-									className="w-full text-white bg-primary-600  font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+			<div className="toaster">
+				<ToastContainer
+					position="top-right"
+					autoClose={5000}
+					hideProgressBar={false}
+					newestOnTop={false}
+					closeOnClick
+					rtl={false}
+					pauseOnFocusLoss
+					draggable
+					pauseOnHover
+					theme="dark"
+				/>
+			</div>
+			{loading ? (
+				<Loading />
+			) : (
+				<div className="min-h-screen flex items-center justify-center">
+					<div className="max-w-md w-full p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+						<form className="max-w-sm mx-auto">
+							<div className="mb-8">
+								<h1 className="text-4xl font-extrabold text-center dark:text-white">
+									Welcome Back
+								</h1>
+							</div>
+							<div className="mb-5">
+								<label
+									htmlFor="email"
+									className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
 								>
-									Sign in
-								</Button>
-								<p className="text-sm font-light text-gray-500 dark:text-gray-400">
-									Don’t have an account yet?{" "}
-									<Link
-										href="/register"
-										className="font-medium text-primary-600 hover:underline dark:text-primary-500"
+									Your email
+								</label>
+								<input
+									type="email"
+									id="email"
+									className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+									placeholder="name@email.com"
+									required
+									value={user.email}
+									onChange={(e) => setUser({ ...user, email: e.target.value })}
+								/>
+							</div>
+							<div className="mb-5">
+								<label
+									htmlFor="password"
+									className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+								>
+									Your password
+								</label>
+								<input
+									type="password"
+									id="password"
+									className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+									required
+									value={user.password}
+									onChange={(e) =>
+										setUser({ ...user, password: e.target.value })
+									}
+								/>
+							</div>
+							<div className="flex items-start mb-5">
+								<div className="flex items-center h-5">
+									<input
+										id="remember"
+										type="checkbox"
+										value=""
+										className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-blue-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800"
+									/>
+								</div>
+								<label
+									htmlFor="remember"
+									className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+								>
+									Remember me
+								</label>
+							</div>
+							<div className="flex items-center justify-between mb-5">
+								{buttonDisabled ? (
+									<button
+										disabled
+										type="button"
+										className="cursor-not-allowed text-white hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-white dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800"
 									>
-										Sign up
-									</Link>
-								</p>
-							</form>
-						</div>
+										Submit
+									</button>
+								) : (
+									<button
+										onClick={onLogin}
+										type="button"
+										className="text-white hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-white dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800"
+									>
+										Submit
+									</button>
+								)}
+
+								<Link
+									href="/signup"
+									type="button"
+									className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+								>
+									Register &rarr;
+								</Link>
+							</div>
+						</form>
 					</div>
 				</div>
-			</section>
+			)}
 		</>
 	);
-};
-
-export default Login;
+}
