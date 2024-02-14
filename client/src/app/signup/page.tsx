@@ -6,28 +6,13 @@ import Link from "next/link";
 import Loading from "../loading";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { singUpSchema } from "@/validators/auth-validator";
+import { addUser } from "@/actions/signUpAction";
 
 export default function SignUpPage() {
 	const router = useRouter();
-
 	const [buttonDisabled, setButtonDisabled] = React.useState(false);
 	const [loading, setLoading] = React.useState(false);
-
-	const onSignUp = async () => {
-		try {
-			setLoading(true);
-			const response = await axios.post("api/user/signup", user);
-			// console.log("SignUp success", response.data);
-			toast.success("SignUp success");
-			router.push("/login");
-		} catch (error: any) {
-			// console.log("SignUp failed", error.response.data.error);
-
-			toast.error(error.response.data.error);
-		} finally {
-			setLoading(false);
-		}
-	};
 	const [user, setUser] = React.useState({
 		firstName: "",
 		lastName: "",
@@ -39,6 +24,36 @@ export default function SignUpPage() {
 		password: "",
 		confirmPassword: "",
 	});
+
+	const clientAction = async (formData: FormData) => {
+		try {
+			setLoading(true);
+			const newUser = { ...user };
+
+			const result = singUpSchema.safeParse(newUser);
+
+			// Zod validation
+			if (!result.success) {
+				toast.error(result.error.issues[0].message);
+			}
+			if (newUser.password !== newUser.confirmPassword) {
+				toast.error("Password and Confirm Password does not match");
+			}
+
+			const response = await addUser(result.data);
+			if (response?.error) {
+				toast.error(response.error);
+			} else {
+				toast.success("User added successfully");
+				router.push("/login");
+			}
+		} catch (error) {
+			toast.error("Something went wrong");
+		} finally {
+			setLoading(false);
+		}
+	};
+
 	useEffect(() => {
 		const isAnyInputEmpty = Object.values(user).some(
 			(value) => typeof value === "string" && value.trim().length === 0
@@ -68,7 +83,7 @@ export default function SignUpPage() {
 			) : (
 				<div className="min-h-screen flex items-center justify-center">
 					<div className="max-w-screen-md w-full p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-						<form className=" mx-auto">
+						<form className=" mx-auto" action={clientAction}>
 							<div className="mb-8 ">
 								<h1 className="text-4xl font-extrabold text-center dark:text-white">
 									Welcome, Create your account
@@ -130,7 +145,10 @@ export default function SignUpPage() {
 												setUser({ ...user, IdentificationType: e.target.value })
 											}
 										>
-											<option selected>Choose Identification Type</option>
+											<option value="Choose Identification Type">
+												Choose Identification Type
+											</option>
+
 											<option value="pan">Pan Card</option>
 											<option value="aadhar">Aadhar Card</option>
 										</select>
@@ -273,8 +291,8 @@ export default function SignUpPage() {
 									</button>
 								) : (
 									<button
-										onClick={onSignUp}
-										type="button"
+										// onClick={onSignUp}
+										type="submit"
 										className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
 									>
 										Submit

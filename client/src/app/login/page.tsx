@@ -6,6 +6,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
 import Loading from "../loading";
+import { loginSchema } from "@/validators/auth-validator";
+import { loginUser } from "@/actions/loginAction";
 
 export default function LoginPage() {
 	const router = useRouter();
@@ -16,13 +18,27 @@ export default function LoginPage() {
 	const [buttonDisabled, setButtonDisabled] = React.useState(false);
 	const [loading, setLoading] = React.useState(false);
 
-	const onLogin: any = async () => {
+	const clientAction = async (formData: FormData) => {
 		try {
 			setLoading(true);
-			const response = await axios.post("/api/user/login", user);
+			const data = {
+				...user,
+			};
+
+			const result = loginSchema.safeParse(data);
+			if (!result.success) {
+				toast.error(result.error.issues[0].message);
+			}
+
+			const response = await loginUser(result.data);
 			// console.log("Login success", response.data);
-			toast.success("Login success");
-			router.push("/");
+
+			if (response?.error) {
+				toast.error(response.error);
+			} else {
+				toast.success("Login success");
+				router.push("/login");
+			}
 		} catch (error: any) {
 			// console.log("Login failed", error.message);
 			toast.error(error.response.data.error);
@@ -60,7 +76,7 @@ export default function LoginPage() {
 			) : (
 				<div className="min-h-screen flex items-center justify-center">
 					<div className="max-w-md w-full p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
-						<form className="max-w-sm mx-auto">
+						<form className="max-w-sm mx-auto" action={clientAction}>
 							<div className="mb-8">
 								<h1 className="text-4xl font-extrabold text-center dark:text-white">
 									Welcome Back
@@ -128,8 +144,7 @@ export default function LoginPage() {
 									</button>
 								) : (
 									<button
-										onClick={onLogin}
-										type="button"
+										type="submit"
 										className="text-white hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-white dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800"
 									>
 										Submit
