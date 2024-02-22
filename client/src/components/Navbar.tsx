@@ -5,13 +5,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 const Navbar = () => {
-	const router = useRouter();
-	const logout = async () => {
-		const response = await logoutUser();
-		if (response.success) {
-			router.push("/login");
-		}
-	};
 	return (
 		<>
 			<nav className="bg-gray-900 text-white fixed w-full z-30 top-0 start-0 border-b border-gray-600">
@@ -36,14 +29,6 @@ const Navbar = () => {
 							<li>
 								<span className="self-center font-semibold whitespace-nowrap dark:text-white">
 									UserName
-								</span>
-							</li>
-							<li className="cursor-pointer">
-								<span
-									onClick={logout}
-									className="block py-2 px-3 md:p-0 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-500"
-								>
-									Logout
 								</span>
 							</li>
 						</ul>
