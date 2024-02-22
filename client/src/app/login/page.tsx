@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
@@ -29,7 +28,6 @@ export default function LoginPage() {
 			if (!result.success) {
 				toast.error(result.error.issues[0].message);
 			}
-
 			const response = await loginUser(result.data);
 			// console.log("Login success", response.data);
 
@@ -41,6 +39,7 @@ export default function LoginPage() {
 			}
 		} catch (error: any) {
 			// console.log("Login failed", error.message);
+			setLoading(false);
 			toast.error(error.response.data.error);
 		} finally {
 			setLoading(false);
