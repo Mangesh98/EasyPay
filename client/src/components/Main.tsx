@@ -7,16 +7,18 @@ export default function Main() {
 	return (
 		<>
 			<div className="p-2 sm:ml-64 text-white h-screen md:mt-20 mt-0">
-				<div className="max-w-xl p-4 mt-4 border rounded-lg shadow bg-gray-800 border-gray-700 flex flex-col lg:flex-row">
+				<div className="max-w-xl p-4 mt-4 border rounded-lg shadow bg-red-900 border-gray-700 flex flex-col lg:flex-row">
 					<div className="lg:w-1/2">
 						<p className=" p-2">Account Number</p>
+						<p className=" p-2">Account Balance</p>
 					</div>
-					<div className="lg:w-1/2">
-						<p className=" p-2">{userData?.firstName}</p>
+					<div className="lg:w-1/2 text-right">
+						<p className=" p-2">{userData?._id}</p>
+						<p className=" p-2">&#8377; {userData?.balance}</p>
 					</div>
 				</div>
 				<div className="max-w-xl p-4 mt-4 border rounded-lg shadow bg-gray-800 border-gray-700 flex flex-col lg:flex-row">
-					<div className="lg:w-1/2">
+					<div className="lg:w-1/2 ">
 						<p className=" p-2">First Name</p>
 						<p className=" p-2">Last Name</p>
 						<p className=" p-2">Email</p>
@@ -24,7 +26,7 @@ export default function Main() {
 						<p className=" p-2">Identification Type</p>
 						<p className=" p-2">Identification Number</p>
 					</div>
-					<div className="lg:w-1/2">
+					<div className="lg:w-1/2 text-right">
 						<p className=" p-2">{userData?.firstName}</p>
 						<p className=" p-2">{userData?.lastName}</p>
 						<p className=" p-2">{userData?.email}</p>

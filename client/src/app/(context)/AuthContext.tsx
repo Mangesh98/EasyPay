@@ -13,6 +13,7 @@ export interface UserInterface {
 	address: string;
 	isVerified: boolean;
 	isAdmin: boolean;
+	balance: number;
 }
 interface AuthContextProps {
 	userData: UserInterface | null;
@@ -26,7 +27,7 @@ const AuthContext = createContext<AuthContextProps>({
 export const AuthProvider = ({ children }: any) => {
 	const [userData, setUserData] = useState<UserInterface | null>(null);
 
-	// Fetch user data 
+	// Fetch user data
 	const fetchUserData = async () => {
 		const data = await getUserData();
 		setUserData(data);
