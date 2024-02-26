@@ -59,6 +59,7 @@ export const addUser = async (newUser: unknown) => {
 			IdentificationNumber,
 			address,
 			password: hashedPassword,
+			balance: 0,
 		});
 
 		const savedUser = await newUser.save();

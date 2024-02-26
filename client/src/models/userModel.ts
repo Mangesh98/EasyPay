@@ -36,6 +36,7 @@ const userSchema = new mongoose.Schema({
 		type: String,
 		required: [true, "Please provide a Address"],
 	},
+
 	isVerified: {
 		type: Boolean,
 		default: false,
@@ -43,6 +44,11 @@ const userSchema = new mongoose.Schema({
 	isAdmin: {
 		type: Boolean,
 		default: false,
+	},
+	balance: {
+		type: Number,
+		default: 0,
+		required: [true, "Please provide a Balance"],
 	},
 	forgotPasswordToken: String,
 	forgotPasswordTokenExpiry: Date,

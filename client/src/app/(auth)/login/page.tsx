@@ -4,9 +4,10 @@ import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
-import Loading from "../loading";
+import Loading from "../../loading";
 import { loginSchema } from "@/validators/auth-validator";
 import { loginUser } from "@/actions/loginAction";
+import { useAuthContext } from "../../(context)/AuthContext";
 
 export default function LoginPage() {
 	const router = useRouter();
@@ -16,6 +17,7 @@ export default function LoginPage() {
 	});
 	const [buttonDisabled, setButtonDisabled] = React.useState(false);
 	const [loading, setLoading] = React.useState(false);
+	const { setUserData } = useAuthContext();
 
 	const clientAction = async (formData: FormData) => {
 		try {
@@ -25,22 +27,24 @@ export default function LoginPage() {
 			};
 
 			const result = loginSchema.safeParse(data);
-			if (!result.success) {
+
+			if (result.success) {
+				const response = await loginUser(result.data);
+
+				if (response.success) {
+					const userData = response.data;
+					setUserData(userData);
+					toast.success("Login success");
+					router.push("/login");
+				} else {
+					toast.error(response.error);
+				}
+			} else {
 				toast.error(result.error.issues[0].message);
 			}
-			const response = await loginUser(result.data);
-			// console.log("Login success", response.data);
-
-			if (response?.error) {
-				toast.error(response.error);
-			} else {
-				toast.success("Login success");
-				router.push("/login");
-			}
 		} catch (error: any) {
-			// console.log("Login failed", error.message);
 			setLoading(false);
-			toast.error(error.response.data.error);
+			toast.error(error.response?.data?.error || "Login failed");
 		} finally {
 			setLoading(false);
 		}
@@ -56,6 +60,7 @@ export default function LoginPage() {
 
 	return (
 		<>
+		
 			<div className="toaster">
 				<ToastContainer
 					position="top-right"

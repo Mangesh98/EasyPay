@@ -6,13 +6,14 @@ import User from "@/models/userModel";
 import bcryptjs from "bcryptjs";
 import { loginSchema } from "@/validators/auth-validator";
 import { cookies } from "next/headers";
+import { UserInterface } from "@/app/(context)/AuthContext";
 
 connect();
 
 export const loginUser = async (user: unknown) => {
 	const result = loginSchema.safeParse(user);
-	console.log(result);
-	console.log(user);
+	// console.log(result);
+	// console.log(user);
 
 	if (!result.success) {
 		return {
@@ -40,6 +41,7 @@ export const loginUser = async (user: unknown) => {
 		// console.log(user);
 
 		//create token data
+
 		const tokenData = {
 			id: user._id,
 			username: user.username,
@@ -54,8 +56,21 @@ export const loginUser = async (user: unknown) => {
 			httpOnly: true,
 			secure: true,
 		});
-
+		const userData: UserInterface = {
+			_id: user._id,
+			firstName: user.firstName,
+			lastName: user.lastName,
+			email: user.email,
+			mobile: user.mobile,
+			IdentificationType: user.IdentificationType,
+			IdentificationNumber: user.IdentificationNumber,
+			password: user.password,
+			address: user.address,
+			isVerified: user.isVerified,
+			isAdmin: user.isAdmin,
+		};
 		return {
+			data: JSON.stringify(userData),
 			message: "User created successfully",
 			success: true,
 		};

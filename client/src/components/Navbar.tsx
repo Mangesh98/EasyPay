@@ -1,10 +1,12 @@
 "use client";
-import { logoutUser } from "@/actions/logoutAction";
-// import Image from "next/image";
+import { useAuthContext } from "@/app/(context)/AuthContext";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const Navbar = () => {
+	const { userData } = useAuthContext();
+	// console.log("this is data : ", userData);
+
 	return (
 		<>
 			<nav className="bg-gray-900 text-white fixed w-full z-30 top-0 start-0 border-b border-gray-600">
@@ -28,7 +30,7 @@ const Navbar = () => {
 						<ul className="flex flex-col font-medium p-4 md:p-0 mt-4 border  rounded-lg  md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0  dbg-gray-800 md:bg-gray-900 border-gray-700">
 							<li>
 								<span className="self-center font-semibold whitespace-nowrap dark:text-white">
-									UserName
+									{userData?.firstName ? userData.firstName : "username"}
 								</span>
 							</li>
 						</ul>
