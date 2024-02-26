@@ -30,9 +30,11 @@ export default function Main() {
 						<p className=" p-2">{userData?.firstName}</p>
 						<p className=" p-2">{userData?.lastName}</p>
 						<p className=" p-2">{userData?.email}</p>
-						<p className=" p-2">{userData?.mobile}</p>
-						<p className=" p-2">{userData?.IdentificationType}</p>
-						<p className=" p-2">{userData?.IdentificationNumber}</p>
+						<p className=" p-2">&#43;{userData?.mobile}</p>
+						<p className=" p-2">
+							{userData?.IdentificationType?.toUpperCase()}
+						</p>
+						<p className="p-2">{userData?.IdentificationNumber}</p>
 					</div>
 				</div>
 			</div>
